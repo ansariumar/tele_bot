@@ -31,9 +31,9 @@ bot.command('check', (ctx) => {
 
 })
 
-bot.command('stop', () => {
-  stop = 1;
-})
+bot.command('stop', () => { stop = 1; Telegraf.reply(`Stop = ${stop}`)})    //When stop is enabled the main function will run only once
+
+bot.command('resume', () => { stop = 0; Telegraf.reply(`Stop = ${stop}`) })  //When stop is disables the main function will run until stop is enabled 
 
 bot.launch();
 
@@ -43,28 +43,35 @@ async function func(coins,ctx) {
   for (var i = 0; i < myCoins.length; i++) {
    const crypto = await CoinGeckoClient.coins.fetch(myCoins[i], {});
 
+    
     const coinName = crypto.data.id;
-    const one_hour_growth = crypto.data.market_data.price_change_percentage_1h_in_currency['inr']
+    const one_hour_growth = crypto.data.market_data.price_change_percentage_1h_in_currency['inr'];
     const coin_price = crypto.data.market_data.current_price['inr'];
+
 
     // ctx.reply(`${coinName} \n Change Percentage in ${coinName} 1 hour: ${one_hour_growth} %`);
 
     // let a = await checkLimit('cardano', 40);
     // ctx.replyWithMarkdown(a)
     
-    if (one_hour_growth >= 2) {
-      ctx.reply(`ALERT!!! ${coinName} went up \nThe Price of ${coinName} is ${coin_price} `);
+    try {
+
+        if (one_hour_growth >= 2) {
+        ctx.reply(`ALERT!!! ${coinName} went up \nThe Price of ${coinName} is ${coin_price} `);
+      }
+
+      if (one_hour_growth <= -3) {
+        ctx.reply(`DOWN DOWN!!! ${coinName} went DOWN \nThe Price of ${coinName} is ${coin_price} `);
+      }
+
+    } catch(error) {
+      console.log(error)
     }
 
-    if (one_hour_growth <= -1) {
-      ctx.reply(`DOWN DOWN!!! ${coinName} went DOWN \nThe Price of ${coinName} is ${coin_price} `);
-    }
     ctx.reply('LOL')
   }
 
   if (stop === 1) {
-    console.log(timeOut)
-    // clearTimeout(timeOut);
     return
   }else
    var timeOut = setTimeout(func, 15000, coins, ctx)
