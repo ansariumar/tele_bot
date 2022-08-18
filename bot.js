@@ -8,6 +8,7 @@ var myCoins = ['cardano', 'binancecoin', 'solana', 'ethereum', 'dogecoin', 'bitc
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
+var stop = 0;
 
 bot.command('trade', async(ctx) => {
 
@@ -15,7 +16,8 @@ bot.command('trade', async(ctx) => {
   let market_cap_change_percentage_24h = market_data.data.data.market_cap_change_percentage_24h_usd;
   ctx.reply(`YO \n Today's market cap is : ${market_cap_change_percentage_24h} %`);
 
-  setInterval(func, 15000, myCoins, ctx);
+  func(myCoins, ctx);
+  // const mainTO = setTimeout(func, 15000, myCoins, ctx);
 
 })
 
@@ -26,7 +28,11 @@ bot.command('check', (ctx) => {
   const coinLimit = num[2];
 
   console.log(coinName, coinLimit)
-  
+
+})
+
+bot.command('stop', () => {
+  stop = 1;
 })
 
 bot.launch();
@@ -43,18 +49,27 @@ async function func(coins,ctx) {
 
     // ctx.reply(`${coinName} \n Change Percentage in ${coinName} 1 hour: ${one_hour_growth} %`);
 
-    let a = await checkLimit('cardano', 40);
-    ctx.replyWithMarkdown(a)
+    // let a = await checkLimit('cardano', 40);
+    // ctx.replyWithMarkdown(a)
     
-    if (one_hour_growth >= 5) {
+    if (one_hour_growth >= 2) {
       ctx.reply(`ALERT!!! ${coinName} went up \nThe Price of ${coinName} is ${coin_price} `);
     }
 
-    if (one_hour_growth <= -3) {
+    if (one_hour_growth <= -1) {
       ctx.reply(`DOWN DOWN!!! ${coinName} went DOWN \nThe Price of ${coinName} is ${coin_price} `);
     }
     ctx.reply('LOL')
   }
+
+  if (stop === 1) {
+    console.log(timeOut)
+    // clearTimeout(timeOut);
+    return
+  }else
+   var timeOut = setTimeout(func, 15000, coins, ctx)
+
+
 }
 
 // Give an upper limit and the coin name to the function and it will send an alert message if the coin cross the upperlimit
