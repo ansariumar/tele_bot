@@ -4,7 +4,7 @@ const CoinGeckoClient = new CoinGecko();
 require('dotenv').config()
 
 
-var myCoins = ['cardano',  'near', 'solana', 'dogecoin', 'ethereum', 'bitcoin','binancecoin', 'apecoin', 'polkadot', 'matic-network','shiba-inu','ethereum-classic', 'flow'];
+var myCoins = ['cardano', 'binancecoin', 'solana', 'ethereum', 'dogecoin', 'bitcoin', 'near', 'apecoin', 'polkadot', 'matic-network', 'shiba-inu', 'ethereum-classic', 'flow'];
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
@@ -15,10 +15,19 @@ bot.command('trade', async(ctx) => {
   let market_cap_change_percentage_24h = market_data.data.data.market_cap_change_percentage_24h_usd;
   ctx.reply(`YO \n Today's market cap is : ${market_cap_change_percentage_24h} %`);
 
-  setInterval(func, 9000, myCoins, ctx);
+  setInterval(func, 15000, myCoins, ctx);
 
 })
 
+
+bot.command('check', (ctx) => {
+  const num = ctx.update.message.text.split(' ');  //num will store the parameter that will come with the command like "/check 12"
+  const coinName = num[1];
+  const coinLimit = num[2];
+
+  console.log(coinName, coinLimit)
+  
+})
 
 bot.launch();
 
@@ -35,7 +44,8 @@ async function func(coins,ctx) {
     // ctx.reply(`${coinName} \n Change Percentage in ${coinName} 1 hour: ${one_hour_growth} %`);
 
     let a = await checkLimit('cardano', 40);
-    ctx.reply(a);
+    ctx.replyWithMarkdown(a)
+    
     if (one_hour_growth >= 5) {
       ctx.reply(`ALERT!!! ${coinName} went up \nThe Price of ${coinName} is ${coin_price} `);
     }
@@ -43,7 +53,7 @@ async function func(coins,ctx) {
     if (one_hour_growth <= -3) {
       ctx.reply(`DOWN DOWN!!! ${coinName} went DOWN \nThe Price of ${coinName} is ${coin_price} `);
     }
-
+    ctx.reply('LOL')
   }
 }
 
@@ -57,7 +67,7 @@ async function checkLimit(coin, limit) {
   });
 
  if (coindata.data.cardano.inr >= limit) {
-  return (`MOTHERFUCKER!!! ITS Finally upppppppp! \n ${coin} is finally UPPPP!`);
+  return (`Upppppppp! \n *${coin.toUpperCase()}* is finally UPPPP!`);
  }
 }
 
