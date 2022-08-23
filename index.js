@@ -6,10 +6,9 @@ const CoinGecko = require('coingecko-api');
 const CoinGeckoClient = new CoinGecko();
 
 const a = async() => {
-  const crypto = await CoinGeckoClient.coins.fetch('flow', {});
-
-    const one_hour_growth = crypto.data.market_data.  ;
-    console.log(one_hour_growth)
+let { data } = await CoinGeckoClient.coins.fetch('bitcoin', {});
+    // const one_hour_growth = crypto.data.market_data.price_change_percentage_1h_in_currency.inr;
+    console.log(data);
 }
    
 

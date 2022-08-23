@@ -4,7 +4,7 @@ const CoinGeckoClient = new CoinGecko();
 require('dotenv').config()
 
 
-var myCoins = ['cardano', 'binancecoin', 'solana', 'ethereum', 'dogecoin', 'bitcoin', 'near', 'apecoin', 'polkadot', 'matic-network', 'shiba-inu', 'ethereum-classic', 'flow'];
+var myCoins = ['cardano', 'binancecoin', 'solana', 'ethereum', 'dogecoin', 'bitcoin', 'near', 'uniswap', 'cosmos', 'eos', 'apecoin', 'polkadot', 'matic-network', 'shiba-inu', 'ethereum-classic', 'flow'];
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
@@ -14,10 +14,14 @@ bot.command('trade', async (ctx) => {
 
   let market_data = await CoinGeckoClient.global();
   let market_cap_change_percentage_24h = market_data.data.data.market_cap_change_percentage_24h_usd;
-  ctx.reply(`YO \n Today's market cap is : ${market_cap_change_percentage_24h} %`);
+
+  try {
+    ctx.reply(`YO \n Today's market cap is : ${market_cap_change_percentage_24h} %`);
+  } catch (err) {
+    console.log(err)
+  }
 
   func(myCoins, ctx);
-  // const mainTO = setTimeout(func, 15000, myCoins, ctx);
 
 })
 
@@ -27,7 +31,16 @@ bot.command('check', (ctx) => {
   const coinName = num[1];
   const coinLimit = num[2];
 
-  console.log(coinName, coinLimit)
+  checkLimit(coinName, coinLimit, ctx)
+
+})
+
+
+bot.command('price', (ctx) => {
+  const num = ctx.update.message.text.split(' ');  //num will store the parameter that will come with the command like "/check 12"
+  const coinName = num[1];
+
+  checkPrice(coinName, ctx)
 
 })
 
@@ -85,7 +98,10 @@ async function func(coins, ctx) {
 }
 
 // Give an upper limit and the coin name to the function and it will send an alert message if the coin cross the upperlimit
-async function checkLimit(coin, limit) {
+async function checkLimit(coin, limit, ctx) {
+
+  console.log(coin)
+
   const crypto = await CoinGeckoClient.coins.fetch(coin, {});
 
   let coindata = await CoinGeckoClient.simple.price({
@@ -93,9 +109,30 @@ async function checkLimit(coin, limit) {
     vs_currencies: ['inr']
   });
 
-  if (coindata.data.cardano.inr >= limit) {
-    return (`Upppppppp! \n *${coin.toUpperCase()}* is finally UPPPP!`);
-  }
+  console.log(coindata.data[0])
+
+  // ctx.reply(`The Current Price of *${coin.toUpperCase()}* is ${coindata.data.cardano.inr}` )
+
+  // if (coindata.data.cardano.inr >= limit) {
+  //   return (`Upppppppp! \n *${coin.toUpperCase()}* is finally UPPPP!`);
+  // }
 }
 
-// removed graceful stop
+async function checkPrice(coin, ctx) {
+
+  let coindata = await CoinGeckoClient.simple.price({
+    ids: [coin],
+    vs_currencies: ['inr']
+  });
+
+  const data = coindata.data
+
+  console.log(Object.entries(data).length);
+
+  if (Object.entries(data).length === 0) 
+    ctx.reply(`The Coin named ${coin} doesn't exist \n Kindly fuckOff`)
+  else
+    ctx.reply(data)
+}
+
+
