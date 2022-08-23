@@ -127,8 +127,6 @@ async function checkPrice(coin, ctx) {
 
   const data = coindata.data
 
-  console.log(Object.entries(data).length);
-
   if (Object.entries(data).length === 0) 
     ctx.reply(`The Coin named ${coin} doesn't exist \n Kindly fuckOff`)
   else
