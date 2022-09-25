@@ -1,11 +1,13 @@
 const { Telegraf } = require('telegraf')
 const CoinGecko = require('coingecko-api');
 const CoinGeckoClient = new CoinGecko();
-const keepAlive = require('./server');
-// require('dotenv').config()
+// const keepAlive = require('./server');
+require('dotenv').config()
 
 
-var myCoins = ['cardano', 'binancecoin', 'suku', 'solana', 'ethereum', 'dogecoin', 'bitcoin', 'near', 'uniswap', 'cosmos', 'eos', 'apecoin', 'polkadot', 'matic-network', 'shiba-inu', 'ethereum-classic', 'flow', 'shping'];
+var myCoins = ['cardano', 'binancecoin', 'suku', 'solana', 'ethereum', 'dogecoin', 'bitcoin'];
+
+// , 'near', 'uniswap', 'cosmos', 'eos', 'apecoin', 'polkadot', 'matic-network', 'shiba-inu', 'ethereum-classic', 'flow', 'shping'
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
@@ -140,4 +142,4 @@ bot.command('rualive', (ctx) => {
 
 bot.launch();
 
-keepAlive();
+// keepAlive();
