@@ -50,7 +50,7 @@ async function func(coins, ctx) {
     return
   }
   else
-    var timeOut = setTimeout(func, 120000, coins, ctx)
+    var timeOut = setTimeout(func, 300000, coins, ctx)
 
 }
 
