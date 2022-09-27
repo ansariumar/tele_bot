@@ -1,15 +1,15 @@
-const express = require('express');
+// const express = require('express');
 
-const server = express();
+// const server = express();
 
-server.all("/", (req, res) => {
-  res.send('the Bots runnin')
-})
+// server.all("/", (req, res) => {
+//   res.send('the Bots runnin')
+// })
 
-function keepAlive() {
-  server.listen(3000, () => {
-    console.log("Server is ready!")
-  })
-}
+// function keepAlive() {
+//   server.listen(3000, () => {
+//     console.log("Server is ready!")
+//   })
+// }
 
-module.exports = keepAlive
+// module.exports = keepAlive
