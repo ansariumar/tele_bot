@@ -1,11 +1,11 @@
 const { Telegraf } = require('telegraf')
 const CoinGecko = require('coingecko-api');
 const CoinGeckoClient = new CoinGecko();
-// const keepAlive = require('./server');
+const keepAlive = require('./server');
 require('dotenv').config()
 
 
-var myCoins = ['cardano', 'binancecoin', 'suku', 'solana', 'ethereum', 'dogecoin', 'bitcoin'];
+var myCoins = ['cardano', 'binancecoin', 'ethereum-classic', 'apecoin', 'solana', 'ethereum', 'dogecoin', 'bitcoin'];
 
 // , 'near', 'uniswap', 'cosmos', 'eos', 'apecoin', 'polkadot', 'matic-network', 'shiba-inu', 'ethereum-classic', 'flow', 'shping'
 
@@ -31,11 +31,11 @@ async function func(coins, ctx) {
     const coin_price = crypto.data.market_data.current_price['inr'];
 
     try {
-      if (one_hour_growth >= 5) {
+      if (one_hour_growth >= 1) {
         ctx.reply(`ALERT!!! ${coinName} went up by ${one_hour_growth}%\nThe Price of ${coinName} is ${coin_price} `);
       }
 
-      if (one_hour_growth <= -2) {
+      if (one_hour_growth <= -0.6) {
         ctx.reply(`DOWN DOWN!!! ${coinName} went DOWN  \nThe Price of ${coinName} is ${coin_price} `);
       }
 
@@ -67,7 +67,7 @@ async function checkPrice(coin, ctx) {
   if (Object.entries(data).length === 0)
     ctx.reply(`The Coin named ${coin} doesn't exist \n Kindly fuckOff`)
   else
-    ctx.reply(data)
+    ctx.reply(data )
 }
 // removed graceful stop
 
@@ -80,7 +80,7 @@ async function checkPrice(coin, ctx) {
 bot.command('trade', async (ctx) => {
 
   let market_data = await CoinGeckoClient.global();
-  let market_cap_change_percentage_24h = market_data.data.data.market_cap_change_percentage_24h_usd;
+  let market_cap_change_percentage_24h = market_data.data.data.market_cap_change_percentage_24h_inr;
   try {
     ctx.reply(`YO \n Today's market cap is : ${market_cap_change_percentage_24h} %`);
   } catch (err) {
@@ -142,4 +142,4 @@ bot.command('rualive', (ctx) => {
 
 bot.launch();
 
-// keepAlive();
+keepAlive();
