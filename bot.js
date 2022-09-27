@@ -5,7 +5,7 @@ const CoinGeckoClient = new CoinGecko();
 require('dotenv').config()
 
 
-var myCoins = ['cardano', 'binancecoin', 'ethereum-classic', '', 'solana', 'ethereum', 'dogecoin', 'bitcoin'];
+var myCoins = ['cardano', 'binancecoin', 'ethereum-classic', 'litentry' , 'solana', 'ethereum', 'dogecoin', 'bitcoin'];
 
 // , 'near', 'uniswap', 'cosmos', 'eos', 'apecoin', 'polkadot', 'matic-network', 'shiba-inu', 'ethereum-classic', 'flow', 'shping'
 
@@ -31,11 +31,11 @@ async function func(coins, ctx) {
     const coin_price = crypto.data.market_data.current_price['usd'];
 
     try {
-      if (one_hour_growth >= 1) {
+      if (one_hour_growth >= 2) {
         ctx.reply(`ALERT!!! ${coinName} went up by ${one_hour_growth}%\nThe Price of ${coinName} is ${coin_price} `);
       }
 
-      if (one_hour_growth <= -0.6) {
+      if (one_hour_growth <= -2) {
         ctx.reply(`DOWN DOWN!!! ${coinName} went DOWN by ${one_hour_growth}%  \nThe Price of ${coinName} is ${coin_price} `);
       }
 
