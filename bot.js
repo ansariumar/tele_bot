@@ -1,7 +1,7 @@
 const { Telegraf } = require('telegraf')
 const CoinGecko = require('coingecko-api');
 const CoinGeckoClient = new CoinGecko();
-const keepAlive = require('./server');
+// const keepAlive = require('./server');
 require('dotenv').config()
 
 
@@ -142,4 +142,4 @@ bot.command('rualive', (ctx) => {
 
 bot.launch();
 
-keepAlive();
+// keepAlive();
