@@ -5,7 +5,7 @@ const CoinGeckoClient = new CoinGecko();
 require('dotenv').config()
 
 
-var myCoins = ['cardano', 'binancecoin', 'ethereum-classic', 'apecoin', 'solana', 'ethereum', 'dogecoin', 'bitcoin'];
+var myCoins = ['cardano', 'binancecoin', 'ethereum-classic', '', 'solana', 'ethereum', 'dogecoin', 'bitcoin'];
 
 // , 'near', 'uniswap', 'cosmos', 'eos', 'apecoin', 'polkadot', 'matic-network', 'shiba-inu', 'ethereum-classic', 'flow', 'shping'
 
@@ -27,8 +27,8 @@ async function func(coins, ctx) {
 
 
     const coinName = crypto.data.id;
-    const one_hour_growth = crypto.data.market_data.price_change_percentage_1h_in_currency.inr;
-    const coin_price = crypto.data.market_data.current_price['inr'];
+    const one_hour_growth = crypto.data.market_data.price_change_percentage_1h_in_currency.usd;
+    const coin_price = crypto.data.market_data.current_price['usd'];
 
     try {
       if (one_hour_growth >= 1) {
@@ -36,7 +36,7 @@ async function func(coins, ctx) {
       }
 
       if (one_hour_growth <= -0.6) {
-        ctx.reply(`DOWN DOWN!!! ${coinName} went DOWN  \nThe Price of ${coinName} is ${coin_price} `);
+        ctx.reply(`DOWN DOWN!!! ${coinName} went DOWN by ${one_hour_growth}%  \nThe Price of ${coinName} is ${coin_price} `);
       }
 
     } catch (error) {
@@ -59,7 +59,7 @@ async function checkPrice(coin, ctx) {
 
   let coindata = await CoinGeckoClient.simple.price({
     ids: [coin],
-    vs_currencies: ['inr']
+    vs_currencies: ['usd']
   });
 
   const data = coindata.data
@@ -80,7 +80,7 @@ async function checkPrice(coin, ctx) {
 bot.command('trade', async (ctx) => {
 
   let market_data = await CoinGeckoClient.global();
-  let market_cap_change_percentage_24h = market_data.data.data.market_cap_change_percentage_24h_inr;
+  let market_cap_change_percentage_24h = market_data.data.data.market_cap_change_percentage_24h_usd;
   try {
     ctx.reply(`YO \n Today's market cap is : ${market_cap_change_percentage_24h} %`);
   } catch (err) {
