@@ -5,7 +5,7 @@ const CoinGeckoClient = new CoinGecko();
 require('dotenv').config()
 
 
-var myCoins = ['cardano', 'binancecoin', 'ethereum-classic','solana', 'ethereum', 'dogecoin', 'bitcoin'];
+var myCoins = ['cardano', 'binancecoin','solana', 'ethereum', 'dogecoin', 'bitcoin'];
 
 // , 'near', 'uniswap', 'cosmos', 'eos', 'apecoin', 'polkadot', 'matic-network', 'shiba-inu', 'ethereum-classic', 'flow', 'shping'
 
@@ -20,8 +20,8 @@ async function func(coins, ctx) {
   ctx.reply(myCoins.length)
   ctx.reply(myCoins)
   if (checkAlive) {
-    ctx.reply("alive M i")
-    ctx.replyWithPhoto('https://knowyourmeme.com/memes/yes-i-am')
+    ctx.replyWithAnimation('https://tenor.com/bbQNY.gif');
+    ctx.reply("yes");
   }
   for (var i = 0; i < myCoins.length; i++) {
     const crypto = await CoinGeckoClient.coins.fetch(myCoins[i], {});
@@ -51,7 +51,7 @@ async function func(coins, ctx) {
     return
   }
   else
-    var timeOut = setTimeout(func, 120000, coins, ctx)
+    var timeOut = setTimeout(func, 300000, coins, ctx)
 
 }
 
@@ -125,16 +125,28 @@ bot.command('price', (ctx) => {
 
 bot.command('add', async (ctx) => {
   const coin = ctx.update.message.text.split(' '); 
-  const coinName = coin[1];
-  console.log("coinname is" + coinName);  //
-  let result = await validateCoin(coinName,ctx);
-  console.log("result is " + result)      //
-  if (result != false) 
-    myCoins.push(coinName);
-  
-  
+  const coinName = coin[1].toLowerCase();
 
+  let result = await validateCoin(coinName,ctx);
+
+  if (result != false){ 
+    myCoins.push(coinName);
+    ctx.reply(`"${coinName}" was added \nThe current coins are ${myCoins}`);
+
+  }
+  
 })
+
+
+bot.command('delete', (ctx) => {                
+  const coin = ctx.update.message.text.split(' ');
+  const coinName = coin[1].toLowerCase();
+
+  myCoins = myCoins.filter(coin => coin != coinName);
+  ctx.reply(`"${coinName}" was Deleted \nThe current coins are ${myCoins}`);
+})
+
+
 
 bot.command('stop', (ctx) => {
   stop = 1;
@@ -162,7 +174,7 @@ bot.command('rualive', (ctx) => {
 
   setTimeout(() => {
     checkAlive = false;
-  }, 180000)
+  }, 360000)
 
 
 })
