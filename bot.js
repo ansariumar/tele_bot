@@ -17,8 +17,7 @@ var checkAlive = false;
 
 
 async function func(coins, ctx) {
-  ctx.reply(myCoins.length)
-  ctx.reply(myCoins)
+
   if (checkAlive) {
     ctx.replyWithAnimation('https://tenor.com/bbQNY.gif');
     ctx.reply("yes");
