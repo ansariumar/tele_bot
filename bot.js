@@ -5,7 +5,7 @@ const CoinGeckoClient = new CoinGecko();
 require('dotenv').config()
 
 
-var myCoins = ['cardano', 'binancecoin', 'ethereum-classic', 'litentry' , 'solana', 'ethereum', 'dogecoin', 'bitcoin'];
+var myCoins = ['cardano', 'binancecoin', 'ethereum-classic','solana', 'ethereum', 'dogecoin', 'bitcoin'];
 
 // , 'near', 'uniswap', 'cosmos', 'eos', 'apecoin', 'polkadot', 'matic-network', 'shiba-inu', 'ethereum-classic', 'flow', 'shping'
 
@@ -17,7 +17,8 @@ var checkAlive = false;
 
 
 async function func(coins, ctx) {
-
+  ctx.reply(myCoins.length)
+  ctx.reply(myCoins)
   if (checkAlive) {
     ctx.reply("alive M i")
     ctx.replyWithPhoto('https://knowyourmeme.com/memes/yes-i-am')
@@ -50,28 +51,38 @@ async function func(coins, ctx) {
     return
   }
   else
-    var timeOut = setTimeout(func, 300000, coins, ctx)
+    var timeOut = setTimeout(func, 120000, coins, ctx)
 
 }
 
 
-async function checkPrice(coin, ctx) {
+async function checkPrice(coin, ctx) {      //perfectly fine 
+
+  let data = await validateCoin(coin, ctx);
+ 
+  if (data != false) 
+    ctx.reply(data)
+
+}
+// removed graceful stop
+
+
+async function validateCoin(coin, ctx){    //perfectly fine 
 
   let coindata = await CoinGeckoClient.simple.price({
     ids: [coin],
     vs_currencies: ['usd']
   });
-
   const data = coindata.data
+  // console.log(data)
 
-  if (Object.entries(data).length === 0)
-    ctx.reply(`The Coin named ${coin} doesn't exist \n Kindly fuckOff`)
-  else
-    ctx.reply(data )
+  if (Object.entries(data).length === 0){
+    ctx.reply(`The coin ${coin} doesn't exist. \n FuckOff`);
+    return false;
+  }else 
+    return data;
+
 }
-// removed graceful stop
-
-
 
 
 // ######################------------------COMMANDS--------------##############################
@@ -103,10 +114,25 @@ bot.command('check', (ctx) => {
 
 
 bot.command('price', (ctx) => {
-  const num = ctx.update.message.text.split(' ');  //num will store the parameter that will come with the command like "/check 12"
-  const coinName = num[1];
+  const coin = ctx.update.message.text.split(' ');  //coin will store the parameter that will come with the command like "/price tron"
+  const coinName = coin[1];
 
-  checkPrice(coinName, ctx)
+  checkPrice(coinName, ctx);
+
+})
+
+
+
+bot.command('add', async (ctx) => {
+  const coin = ctx.update.message.text.split(' '); 
+  const coinName = coin[1];
+  console.log("coinname is" + coinName);  //
+  let result = await validateCoin(coinName,ctx);
+  console.log("result is " + result)      //
+  if (result != false) 
+    myCoins.push(coinName);
+  
+  
 
 })
 
@@ -118,10 +144,14 @@ bot.command('stop', (ctx) => {
     Use the /resume Command to continue the undo or wait for the next instuctions`)
 })
 
+
+
+
 bot.command('resume', (ctx) => {
   stop = 0;
   ctx.reply(`Stop = ${stop}`)
 }) //When stop is disables the main function will run until stop is enabled 
+
 
 
 bot.command('rualive', (ctx) => {
