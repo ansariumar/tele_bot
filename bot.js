@@ -22,6 +22,7 @@ async function func(coins, ctx) {
     ctx.replyWithAnimation('https://tenor.com/bbQNY.gif');
     ctx.reply("yes");
   }
+  
   for (var i = 0; i < myCoins.length; i++) {
     const crypto = await CoinGeckoClient.coins.fetch(myCoins[i], {});
 
