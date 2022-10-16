@@ -16,13 +16,12 @@ var checkAlive = false;
 
 
 
-async function func(coins, ctx) {
-
+async function func(ctx) {
+  ctx.reply("running");
   if (checkAlive) {
     ctx.replyWithAnimation('https://tenor.com/bbQNY.gif');
     ctx.reply("yes");
   }
-  
   for (var i = 0; i < myCoins.length; i++) {
     const crypto = await CoinGeckoClient.coins.fetch(myCoins[i], {});
 
@@ -50,8 +49,7 @@ async function func(coins, ctx) {
     ctx.reply("The /trade command has stopped \n Use the /resume command to use the /trade command again")
     return
   }
-  else
-    var timeOut = setTimeout(func, 300000, coins, ctx)
+
 
 }
 
@@ -97,8 +95,8 @@ bot.command('trade', async (ctx) => {
   } catch (err) {
     console.log(err)
   }
-  func(myCoins, ctx);
-  // const mainTO = setTimeout(func, 15000, myCoins, ctx);
+  
+  setInterval(func, 20000, ctx);
 
 })
 
