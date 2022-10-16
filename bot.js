@@ -17,7 +17,7 @@ var checkAlive = false;
 
 
 async function func(ctx) {
-  ctx.reply("running");
+  
   if (checkAlive) {
     ctx.replyWithAnimation('https://tenor.com/bbQNY.gif');
     ctx.reply("yes");
@@ -96,7 +96,7 @@ bot.command('trade', async (ctx) => {
     console.log(err)
   }
   
-  setInterval(func, 20000, ctx);
+  setInterval(func, 300000, ctx);
 
 })
 
