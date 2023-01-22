@@ -1,0 +1,11 @@
+
+
+PROBLEMS
+
+1} There was this problem with the bot when i wrote the /summ command  with a paragraph to summariz it it returned an error that the parameter was not passed (well i fucking passed a full fucking copypasta). So why this error? WELL it turns out that after the /sum {paragraph} command if there were more than one blank spaces, the bot only took the blank space as input.
+
+2} guess what the problem was when summarizing the paragraph with chatGPT...... YUP that's it that's fucking it you are absolutely correct(no bro you don't know shit). While using the TL;DR bot of chatGPT you need to end your sentence with a FUCKING "/n/nTL;dr". Yup this idiot didn't read the 2 lines of documentaion.(and yeah the above point was a problem to another module and not this specific one, guess I might have some tester blood running through me)
+
+3} We really need to learn the ERRORHANDLING because of this many functionalities these bots crashes too often, there will be need for restriction like if this command is running that command should be blocked for this certain interval etc... There wil be too many try...catch blocks
+
+4} Setting the top_p and the temperature

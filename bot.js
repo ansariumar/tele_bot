@@ -1,9 +1,15 @@
 const { Telegraf } = require('telegraf')
 const CoinGecko = require('coingecko-api');
 const CoinGeckoClient = new CoinGecko();
-// const keepAlive = require('./server');
+ const { Configuration, OpenAIApi } = require("openai");
+
+// const { summary } = require('./test.js');
+const { func, checkPrice, validateCoin } = require('./crypto.js')
 require('dotenv').config()
 
+const configuration = new Configuration({
+  apiKey: "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"
+});
 
 var myCoins = ['cardano', 'binancecoin','solana', 'ethereum', 'dogecoin', 'bitcoin'];
 
@@ -13,74 +19,6 @@ const bot = new Telegraf(process.env.BOT_TOKEN)
 
 var stop = 0;
 var checkAlive = false;
-
-
-
-async function func(ctx) {
-  
-  if (checkAlive) {
-    ctx.replyWithAnimation('https://tenor.com/bbQNY.gif');
-    ctx.reply("yes");
-  }
-  for (var i = 0; i < myCoins.length; i++) {
-    const crypto = await CoinGeckoClient.coins.fetch(myCoins[i], {});
-
-
-    const coinName = crypto.data.id;
-    const one_hour_growth = crypto.data.market_data.price_change_percentage_1h_in_currency.usd;
-    const coin_price = crypto.data.market_data.current_price['usd'];
-
-    try {
-      if (one_hour_growth >= 2) {
-        ctx.reply(`ALERT!!! ${coinName} went up by ${one_hour_growth}%\nThe Price of ${coinName} is ${coin_price} `);
-      }
-
-      if (one_hour_growth <= -2) {
-        ctx.reply(`DOWN DOWN!!! ${coinName} went DOWN by ${one_hour_growth}%  \nThe Price of ${coinName} is ${coin_price} `);
-      }
-
-    } catch (error) {
-      console.log("We Got the error SIR:  " + error)
-    }
-
-  }
-
-  if (stop === 1) {
-    ctx.reply("The /trade command has stopped \n Use the /resume command to use the /trade command again")
-    return
-  }
-
-
-}
-
-
-async function checkPrice(coin, ctx) {      //perfectly fine 
-
-  let data = await validateCoin(coin, ctx);
- 
-  if (data != false) 
-    ctx.reply(data)
-
-}
-// removed graceful stop
-
-
-async function validateCoin(coin, ctx){    //perfectly fine 
-
-  let coindata = await CoinGeckoClient.simple.price({
-    ids: [coin],
-    vs_currencies: ['usd']
-  });
-  const data = coindata.data
-  // console.log(data)
-
-  if (Object.entries(data).length === 0){
-    ctx.reply(`The coin ${coin} doesn't exist. \n FuckOff`);
-    return false;
-  }else 
-    return data;
-
-}
 
 
 // ######################------------------COMMANDS--------------##############################
@@ -115,16 +53,20 @@ bot.command('price', (ctx) => {
   const coin = ctx.update.message.text.split(' ');  //coin will store the parameter that will come with the command like "/price tron"
   const coinName = coin[1];
 
+
   checkPrice(coinName, ctx);
 
 })
-
 
 
 bot.command('add', async (ctx) => {
   const coin = ctx.update.message.text.split(' '); 
   const coinName = coin[1].toLowerCase();
 
+  if(myCoins.includes(coinName)) {
+    ctx.reply("This coin already exist FuckOff");
+  }
+  
   let result = await validateCoin(coinName,ctx);
 
   if (result != false){ 
@@ -136,7 +78,7 @@ bot.command('add', async (ctx) => {
 })
 
 
-bot.command('delete', (ctx) => {                
+bot.command('rm', (ctx) => {                
   const coin = ctx.update.message.text.split(' ');
   const coinName = coin[1].toLowerCase();
 
@@ -177,8 +119,32 @@ bot.command('rualive', (ctx) => {
 
 })
 
+bot.command('summa', async (ctx) => {
 
+let text = await (ctx.update.message.text).toString();
+text = text + "\n\nTl;dr"
+const openai = new OpenAIApi(configuration);
 
+console.log(text)
+try {
+const response = await openai.createCompletion({
+  model: "text-davinci-003",
+  prompt: text,
+  temperature: 0.7,
+  max_tokens: 60,
+  top_p: 1.0,
+  frequency_penalty: 0.0,
+  presence_penalty: 1,
+});
+ 
+   ctx.reply(response.data.choices[0].text) 
+
+ } catch(error) {
+   console.log(error)
+ }
+// ctx.reply(response.data.choices[0].text) 
+ // console.log("THis  IS FROM CHATGPT \n\n" + response.data.choices[0].text)
+})
 
 bot.launch();
 
